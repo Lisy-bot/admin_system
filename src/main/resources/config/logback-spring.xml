@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- -scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。-scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。 - 当scan为true时，此属性生效。默认的时间间隔为1分钟 -->
+<configuration scan="true" scanPeriod="10 seconds">
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
+    <property name="LOG_HOME" value="${catalina.base}/logs/admin_system" />
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度，%logger{50}输出日志的类，50代表包名加类名的总长度限制，%msg：日志消息，%n是换行符 -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- info -->
+    <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <FileNamePattern>${LOG_HOME}/info-%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <!--日志文件保留天数 -->
+            <maxHistory>30</maxHistory>
+            <!--日志文件最大的大小-->
+            <MaxFileSize>500MB</MaxFileSize>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder  by default -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{50} -%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_HOME}/warn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--日志文件保留天数 -->
+            <maxHistory>30</maxHistory>
+            <!--日志文件最大的大小-->
+            <MaxFileSize>100MB</MaxFileSize>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{50} -%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_HOME}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--日志文件保留天数 -->
+            <maxHistory>30</maxHistory>
+            <!--日志文件最大的大小-->
+            <MaxFileSize>100MB</MaxFileSize>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder  by default -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{50} -%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <!-- 控制台输出 -->
+        <appender-ref ref="STDOUT" />
+        <!-- 文件输出 -->
+        <appender-ref ref="info" />
+        <appender-ref ref="warn" />
+        <appender-ref ref="error" />
+    </root>
+
+    <logger name="net.sf.ehcache" level="warn" additivity="false">
+        <appender-ref ref="warn" />
+    </logger>
+
+    <logger name="com.alibaba.druid" level="warn" additivity="false">
+        <appender-ref ref="warn" />
+    </logger>
+</configuration>
